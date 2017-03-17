@@ -8,7 +8,8 @@ default['vim']['plugins'] = %w(
   rking/ag.vim
   scrooloose/nerdcommenter
   MarcWeber/vim-addon-mw-utils
-  jelera/vim-javascript-syntax
   mark-maxwell/vim-spec-split
+  pangloss/vim-javascript
+  mxw/vim-jsx
 )
 default['vim']['colorscheme'] = 'monokai'
