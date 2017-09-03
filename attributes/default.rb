@@ -13,3 +13,9 @@ default['vim']['plugins'] = %w(
   mxw/vim-jsx
 )
 default['vim']['colorscheme'] = 'monokai'
+
+if platform?('centos')
+  default['vim']['user'] = 'vagrant'
+elsif platform?('ubuntu')
+  default['vim']['user'] = 'ubuntu'
+end

@@ -20,6 +20,10 @@ describe 'vim::default' do
       expect { chef_run }.to_not raise_error
     end
 
+    it 'includes git recipe' do
+      expect(chef_run).to include_recipe('git::default')
+    end
+
     it 'installs vim' do
       expect(chef_run).to install_package('vim-enhanced')
     end
@@ -136,6 +140,149 @@ describe 'vim::default' do
             user: 'vagrant',
             group: 'vagrant',
             environment: { 'HOME' => '/home/vagrant', 'USER' => 'vagrant' },
+            timeout: 10
+          )
+      end
+    end
+  end
+
+  context 'When all attributes are default, on ubuntu' do
+    subject(:chef_run) {
+      ChefSpec::SoloRunner.new(platform: platform, version: version).
+        converge(described_recipe)
+    }
+
+    let(:platform) { 'ubuntu' }
+    let(:version) { '16.04' }
+
+    it 'converges successfully' do
+      expect { chef_run }.to_not raise_error
+    end
+
+    it 'includes git recipe' do
+      expect(chef_run).to include_recipe('git::default')
+    end
+
+    it 'installs vim' do
+      expect(chef_run).to install_package('vim')
+    end
+
+    it 'upgrades vim' do
+      expect(chef_run).to upgrade_package('vim')
+    end
+
+    describe '#directories' do
+      it 'creates ~/.vim' do
+        expect(chef_run).to create_directory('/home/ubuntu/.vim').
+          with(
+            owner: 'ubuntu',
+            group: 'ubuntu',
+            mode: '755'
+          )
+      end
+
+      it 'creates ~/.vim/bundle' do
+        expect(chef_run).to create_directory('/home/ubuntu/.vim/bundle').
+          with(
+            owner: 'ubuntu',
+            group: 'ubuntu',
+            mode: '755'
+          )
+      end
+
+      it 'creates ~/.vim/colors' do
+        expect(chef_run).to create_directory('/home/ubuntu/.vim/colors').
+          with(
+            owner: 'ubuntu',
+            group: 'ubuntu',
+            mode: '755'
+          )
+      end
+    end
+
+    describe '#templates' do
+      it 'creates ~/.vim/colors/monokai.vim' do
+        expect(chef_run).to create_template('/home/ubuntu/.vim/colors/monokai.vim').
+          with(
+            owner: 'ubuntu',
+            group: 'ubuntu',
+            mode: '644'
+          )
+      end
+
+      it 'creates ~/.vimrc' do
+        expect(chef_run).to create_template('/home/ubuntu/.vimrc').
+          with(
+            owner: 'ubuntu',
+            group: 'ubuntu',
+            mode: '644'
+          )
+      end
+    end
+
+    describe '#git' do
+      it 'checkout/sync Vundle repo' do
+        expect(chef_run).to sync_git('/home/ubuntu/.vim/bundle/Vundle.vim').
+          with(
+            repository: 'https://github.com/VundleVim/Vundle.vim.git',
+            user: 'ubuntu',
+            group: 'ubuntu',
+            environment: { 'HOME' => '/home/ubuntu', 'USER' => 'ubuntu' },
+            timeout: 10
+          )
+      end
+
+      it 'checkout/sync ctrlp repo' do
+        expect(chef_run).to sync_git('/home/ubuntu/.vim/bundle/ctrlp.vim').
+          with(
+            repository: 'https://github.com/kien/ctrlp.vim.git',
+            user: 'ubuntu',
+            group: 'ubuntu',
+            environment: { 'HOME' => '/home/ubuntu', 'USER' => 'ubuntu' },
+            timeout: 10
+          )
+      end
+
+      it 'checkout/sync nerdtree repo' do
+        expect(chef_run).to sync_git('/home/ubuntu/.vim/bundle/nerdtree').
+          with(
+            repository: 'https://github.com/scrooloose/nerdtree.git',
+            user: 'ubuntu',
+            group: 'ubuntu',
+            environment: { 'HOME' => '/home/ubuntu', 'USER' => 'ubuntu' },
+            timeout: 10
+          )
+      end
+
+      it 'checkout/sync tlib repo' do
+        expect(chef_run).to sync_git('/home/ubuntu/.vim/bundle/tlib_vim').
+          with(
+            repository: 'https://github.com/tomtom/tlib_vim.git',
+            user: 'ubuntu',
+            group: 'ubuntu',
+            environment: { 'HOME' => '/home/ubuntu', 'USER' => 'ubuntu' },
+            timeout: 10
+          )
+      end
+
+      it 'checkout/sync vim-better-whitespace repo' do
+        expect(chef_run).to sync_git('/home/ubuntu/.vim/bundle/vim-better-whitespace').
+          with(
+            repository: 'https://github.com/ntpeters/vim-better-whitespace.git',
+            user: 'ubuntu',
+            group: 'ubuntu',
+            environment: { 'HOME' => '/home/ubuntu', 'USER' => 'ubuntu' },
+            timeout: 10
+          )
+      end
+
+      it 'checkout/sync vim-snipmate repo' do
+        expect(chef_run).to sync_git('/home/ubuntu/.vim/bundle/vim-snipmate').
+          with(
+            repository: 'https://github.com/garbas/vim-snipmate.git',
+            user: 'ubuntu',
+            group: 'ubuntu',
+            environment: { 'HOME' => '/home/ubuntu', 'USER' => 'ubuntu' },
             timeout: 10
           )
       end

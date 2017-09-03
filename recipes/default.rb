@@ -6,47 +6,65 @@
 
 include_recipe 'git::default'
 
-package 'vim-enhanced'
+if platform?('centos')
 
-directory '/home/vagrant/.vim' do
-  owner 'vagrant'
-  group 'vagrant'
+  package 'vim-enhanced'
+
+elsif platform?('ubuntu')
+
+  # install latest version (vim 8)
+  apt_repository 'vim-8' do
+    uri 'ppa:jonathonf/vim'
+  end
+
+  apt_update 'update'
+
+  package 'vim' do
+    action [:install, :upgrade]
+  end
+end
+
+_user = node['vim']['user']
+
+directory "/home/#{_user}/.vim" do
+  owner _user
+  group _user
   mode '755'
 end
 
-directory '/home/vagrant/.vim/bundle' do
-  owner 'vagrant'
-  group 'vagrant'
+directory "/home/#{_user}/.vim/bundle" do
+  owner _user
+  group _user
   mode '755'
 end
 
-directory '/home/vagrant/.vim/colors' do
-  owner 'vagrant'
-  group 'vagrant'
+directory "/home/#{_user}/.vim/colors" do
+  owner _user
+  group _user
   mode '755'
 end
 
-template '/home/vagrant/.vim/colors/monokai.vim' do
+template "/home/#{_user}/.vim/colors/monokai.vim" do
   source 'colors/monokai.vim.erb'
-  owner 'vagrant'
-  group 'vagrant'
+  owner _user
+  group _user
   mode '644'
 end
 
-template '/home/vagrant/.vimrc' do
+template "/home/#{_user}/.vimrc" do
   source 'vimrc.erb'
-  owner 'vagrant'
-  group 'vagrant'
+  owner _user
+  group _user
   mode '644'
 end
 
 # install plugins
 node['vim']['plugins'].each do |plugin|
-  git "/home/vagrant/.vim/bundle/#{plugin.split('/').last}" do
+  git "/home/#{_user}/.vim/bundle/#{plugin.split('/').last}" do
     repository "https://github.com/#{plugin}.git"
-    user 'vagrant'
-    group 'vagrant'
-    environment ({ 'HOME' => '/home/vagrant', 'USER' => 'vagrant' })
+    user _user
+    group _user
+    environment ({ 'HOME' => "/home/#{_user}", 'USER' => _user })
     timeout 10
   end
 end
