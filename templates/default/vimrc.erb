@@ -69,6 +69,9 @@ set visualbell
 " is unset, this does nothing.
 set t_vb=
 
+" Enable use of the mouse for all modes
+set mouse=a
+
 " Set the command window height to 2 lines, to avoid many cases of having to
 " "press <Enter> to continue"
 set cmdheight=2
@@ -87,7 +90,7 @@ set softtabstop=2
 set expandtab
 
 "------------------------------------------------------------
-colorscheme <%= node['vim']['colorscheme'] %>
+colorscheme monokai
 
 "------------------------------------------------------------
 " Useful mappings
@@ -102,7 +105,11 @@ map <Leader>h :call Hspec()<CR>
 " next search
 nnoremap <C-L> :nohl<CR><C-L>
 
+" maxwell plugin to open spec for this file
 map <Leader>t :tab sp<CR>
+
+" copy current path with rspec command
+map <Leader>y :let @+ = "bundle exec rspec " . expand("%")<CR>
 
 "-----------------------------------------------------------
 " NERDTREE
@@ -164,7 +171,6 @@ set incsearch
 " SYNTAX HIGHLIGHTING FOR EJS FILES
 "
 au BufNewFile,BufRead *.ejs set filetype=html
-
 
 "-------------------------------------------------------
 " SYNTAX HIGHLIGHTING FOR JS AND JSX FILES
